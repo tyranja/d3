@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Bar chart, extended with more values</title>
+		<script type="text/javascript" src="../d3/d3.v3.js"></script>
+		<style type="text/css">
+		
+			div.bar {
+				display: inline-block;
+				width: 20px;
+				height: 75px;	/* Gets overriden by D3-assigned height below */
+				margin-right: 2px;
+				background-color: red;
+			}
+		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+		
+			var dataset = [ 25, 7, 5, 26, 11, 8, 25, 14, 23, 2, 19, 14, 1, 11, 22, 6, 9, 29, 11, 13, 12, 17, 18, 10, 24, 18, 25, 9, 3, 25, 7, 5, 26, 11, 8, 25, 14, 23, 19, 14, 11, 22, 29, 11, 13, 12, 17, 18, 10, 24, 18, 25, 9, 3, 2, 5, ];
+			
+			d3.select("body").selectAll("div")
+				.data(dataset)
+				.enter()
+				.append("div")
+				.attr("class", "bar")
+				.style("height", function(d) {
+					var barHeight = d * 7;
+					return barHeight + "px";
+				})
+				.style("background-color", function(c) {
+					if (c > 25) {
+						return "black";
+					} 
+					else if (c > 20) {
+						return "darkred";
+					}
+					else if (c > 15) {
+						return "red";
+					}
+					else if (c > 10) {
+						return "orangered";
+					}
+					else if (c > 5) {
+						return "orange";
+					}
+					else {
+						return "gold";
+					}
+
+				});
+			
+		</script>
+	</body>
+</html>
