@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: Transitioning to randomized data values</title>
+		<title>D3: Dynamically adjusting the vertical scale</title>
 		<script type="text/javascript" src="../d3/d3.v3.js"></script>
 		<style type="text/css">
 			/* No style rules here yet */		
@@ -28,6 +28,8 @@
 			var yScale = d3.scale.linear()
 							.domain([0, d3.max(dataset)])
 							.range([0, h]);
+
+
 			
 			//Create SVG element
 			var svg = d3.select("body")
@@ -81,12 +83,19 @@
 				.on("click", function() {
 
 					//New values for dataset
-					var numValues = dataset.length;						//Count original length of dataset
-					dataset = [];  						 				//Initialize empty array
-					for (var i = 0; i < numValues; i++) {				//Loop numValues times
-						var newNumber = (Math.floor(Math.random() * 25)) + 1; //New random integer (0-25)
-						dataset.push(newNumber);			 			//Add new number to array
+					var numValues = dataset.length;						 		//Count original length of dataset
+					var maxValue = 100;											//Highest possible new value
+					dataset = [];  						 				 		//Initialize empty array
+					for (var i = 0; i < numValues; i++) {				 		//Loop numValues times
+						var newNumber = (Math.floor(Math.random() * maxValue + 5));	//New random integer (0-100)
+						dataset.push(newNumber);			 			 		//Add new number to array
 					}
+					var red = Math.floor(Math.random() * 256);
+					var green = Math.floor(Math.random() * 256);
+
+					//Update scale domain
+					//Recalibrate the scale domain, given the new max value in dataset
+					yScale.domain([0, d3.max(dataset)]);
 
 					//Update all rects
 					svg.selectAll("rect")
@@ -103,7 +112,7 @@
 					   		return yScale(d);
 					   })
 					   .attr("fill", function(d) {
-							return "rgb(0, 0, " + (d * 10) + ")";
+							return "rgb(" + red + ", " + green + ", " + (d * 2) + ")";
 					   });
 
 					//Update all labels
@@ -121,8 +130,9 @@
 					   		return xScale(i) + xScale.rangeBand() / 2;
 					   })
 					   .attr("y", function(d) {
-					   		return h - yScale(d) + 14;
-					   });
+					   		return h - yScale(d) + 24;
+					   })
+					   .style("font-size","28px");
 					   				
 				});
 

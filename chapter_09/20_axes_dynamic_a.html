@@ -29,7 +29,7 @@
 			//Width and height
 			var w = 500;
 			var h = 300;
-			var padding = 0;
+			var padding = 30;
 			
 			//Dynamic, random dataset
 			var dataset = [];											//Initialize empty array
@@ -41,11 +41,16 @@
 				dataset.push([newNumber1, newNumber2]);					//Add new number to array
 			}
 
-			//Create scale functions
+			//Create scale functions for our x-axis
+			// returns eine nummer die durch die vorhandenen daten und die ausgabe genieriert wird
+			// gets a number
 			var xScale = d3.scale.linear()
+			//return the the greatest value of the the first value of each subarray
 								 .domain([0, d3.max(dataset, function(d) { return d[0]; })])
 								 .range([padding, w - padding * 2]);
 
+			//Create scale functions for our y-axis
+			// gets a number
 			var yScale = d3.scale.linear()
 								 .domain([0, d3.max(dataset, function(d) { return d[1]; })])
 								 .range([h - padding, padding]);
@@ -109,7 +114,7 @@
 						dataset.push([newNumber1, newNumber2]);					//Add new number to array
 					}
 					
-					//Update scale domains        Maßstab Bereich
+					//Update scale domains
 					xScale.domain([0, d3.max(dataset, function(d) { return d[0]; })]);
 					yScale.domain([0, d3.max(dataset, function(d) { return d[1]; })]);
 
@@ -119,7 +124,8 @@
 					   .transition()
 					   .duration(1000)		
 					   .attr("cx", function(d) {
-					   		return xScale(d[0]);
+					   		// return xScale(d[0])
+					   		console.log(xScale(d[0]));
 					   })
 					   .attr("cy", function(d) {
 					   		return yScale(d[1]);
