@@ -2,19 +2,10 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>D3: A simple CSS-only hover effect</title>
+		<title>D3: Smoother highlight transitions</title>
 		<script type="text/javascript" src="../d3/d3.v3.js"></script>
 		<style type="text/css">
-		rect {
-			-moz-transition: all 0.3s;
-			-o-transition: all 0.3s;
-			-webkit-transition: all 0.3s;
-			transition: all 0.3s;
-		}
-		rect:hover {
-			fill: white;
-			}
-
+			/* No style rules here yet */		
 		</style>
 	</head>
 	<body>
@@ -58,6 +49,16 @@
 			   })
 			   .attr("fill", function(d) {
 					return "rgb(0, 0, " + (d * 10) + ")";
+			   })
+			   .on("mouseover", function() {
+			   		d3.select(this)
+			   			.attr("fill", "white");
+			   })
+			   .on("mouseout", function(d) {
+				   d3.select(this)
+				   		.transition()
+				   		.duration(800)
+						.attr("fill", "rgb(0, 0, " + (d * 10) + ")");
 			   });
 
 			//Create labels

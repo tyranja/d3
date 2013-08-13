@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Pie layout</title>
+		<script type="text/javascript" src="../d3/d3.v3.js"></script>
+		<style type="text/css">
+
+			text {
+				font-family: sans-serif;
+				font-size: 18px;
+				fill: white;
+			}
+
+			#tooltip {
+				position: absolute;
+				width: 200px;
+				height: auto;
+				padding: 10px;
+				background-color: white;
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				pointer-events: none;
+			}
+			
+			#tooltip.hidden {
+				display: none;
+			}
+			
+			#tooltip p {
+				margin: 0;
+				font-family: sans-serif;
+				font-size: 16px;
+				line-height: 20px;
+			} 
+
+		</style>
+	</head>
+	<body>
+			<div id="tooltip" class="hidden">
+			<p><strong>Important Label Heading</strong></p>
+			<p><span id="value">100</span>%</p>
+		</div>
+
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 500;
+			var h = 500;
+
+			var dataset = [ 
+											{ key: "complaining about Carlas complaining", value: 15 },
+											{ key: "working", value: 55 },
+											{ key: "doing research in the internet", value: 20 },
+											{ key: "thinking about what to eat", value: 12 },
+											{ key: "eat", value: 4 },
+											{ key: "drink", value: 2 }
+										];
+
+			var outerRadius = w / 2;
+			var innerRadius = 0;
+			var arc = d3.svg.arc()
+							.innerRadius(innerRadius)
+							.outerRadius(outerRadius);
+			
+			var pie = d3.layout.pie()
+				.value(function(dataset) { return dataset.value; });
+			
+			//Easy colors accessible via a 10-step ordinal scale
+			var color = d3.scale.category10();
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+			
+			//Set up groups
+			var arcs = svg.selectAll("g.arc")
+						  .data(pie(dataset))
+						  .enter()
+						  .append("g")
+						  .attr("class", "arc")
+						  .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
+			
+			//Draw arc paths
+			arcs.append("path")
+			    .attr("fill", function(d, i) {
+			    	return color(i);
+			    })
+			    .attr("d", arc)
+
+			    
+			// //Labels
+			// arcs.append("text")
+			//     .attr("transform", function(d) {
+			//     	return "translate(" + arc.centroid(d) + ")";
+			//     })
+			//     .attr("text-anchor", "middle")
+			//     .text(function(d, i) { return dataset[i].key; });
+
+
+						
+		</script>
+	</body>
+</html>

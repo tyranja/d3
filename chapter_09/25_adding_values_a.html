@@ -140,14 +140,11 @@
 						.attr("y", function(d) {				//Sets the y value, based on the updated yScale
 							return h - yScale(d);
 						})
-						.attr("width", xScale.rangeBand())		//Sets the width value, based on the updated xScale
-						.attr("height", function(d) {			//Sets the height value, based on the updated yScale
-							return yScale(d);
-						});
+						.attr("fill", "white");
 
 					//Update…
 					label.transition()							//Initiate a transition on all elements in the update selection (all rects)
-						.duration(500)
+						.duration(800)
 						.text(function(d) {
 					   		return d;
 					   })

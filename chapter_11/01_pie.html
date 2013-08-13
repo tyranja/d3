@@ -18,8 +18,8 @@
 		<script type="text/javascript">
 
 			//Width and height
-			var w = 300;
-			var h = 300;
+			var w = 500;
+			var h = 500;
 
 			var dataset = [ 5, 10, 20, 45, 6, 25 ];
 
@@ -47,6 +47,8 @@
 						  .append("g")
 						  .attr("class", "arc")
 						  .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
+			var arcOver = d3.layout.arc()
+        .outerRadius(r + 10);
 			
 			//Draw arc paths
 			arcs.append("path")
