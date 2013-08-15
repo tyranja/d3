@@ -16,7 +16,7 @@
         #tooltip {
           font-family: Arial;
           display: none;
-          position: fixed;
+          position: absolute;
           color: white;
           padding: 10px;
           background-color: #000;
@@ -33,7 +33,7 @@
     r = w / 2,                            //radius
     color = d3.scale.category20c();     //builtin range of colors
  
-    data = [{ key: "complaining about Carlas complaining", value: 15 },
+    data_anja = [{ key: "complaining about Carlas complaining", value: 15 },
            { key: "working", value: 55 },
            { key: "internet 'research'", value: 20 },
            { key: "thinking about what to eat", value: 12 },
@@ -41,52 +41,59 @@
            { key: "hydration", value: 2 }
            ];
     
-    var vis = d3.select("body")
+    var vis_anja = d3.select("body")
         .append("svg:svg")              //create the SVG element inside the <body>
-        .data([data])                   //associate our data with the document
-            .attr("width", w)           //set the width and height of our visualization (these will be attributes of the <svg> tag
-            .attr("height", h)
+        .data([data_anja])                   //associate our data with the document
+        .attr("width", w)           //set the width and height of our visualization (these will be attributes of the <svg> tag
+        .attr("height", h)
         .append("svg:g")                //make a group to hold our pie chart
-            .attr("transform", "translate(" + r + "," + r + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+        .attr("transform", "translate(" + r + "," + r + ")")    //move the center of the pie chart from 0, 0 to radius, radius
  
-    var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
+    var arc_anja = d3.svg.arc()              //this will create <path> elements for us using arc data
         .outerRadius(r);
  
-    var pie = d3.layout.pie()           //this will create arc data for us given a list of values
+    var pie_anja = d3.layout.pie()           //this will create arc data for us given a list of values
         .value(function(d) { return d.value; });    //we must tell it out to access the value of each element in our data array
  
-    var arcs = vis.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
-        .data(pie)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
+    var arcs_anja = vis_anja.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
+        .data(pie_anja)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
         .enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
-            .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
-                .attr("class", "slice")    //allow us to style things in the slices (like text)
-                .on('mouseover', function(d) {
-                    $("#tooltip")
-                      .html(d.data.key)
-                      .show();
-                })
-                .on('mousemove', function(d) {
-                    $("#tooltip")
-                      .css('left', d3.mouse(this)[0] + 270)
-                      .css('top', d3.mouse(this)[1]+180)
-                })
-                .on('mouseout', function(d) {
-                    $("#tooltip").html('').hide();
-                });
+        .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+        .attr("class", "slice")    //allow us to style things in the slices (like text)
+        .on('mouseover', function(d) {
+          $("#tooltip")
+              .html(d.data.key)
+              .show();
+          })
+        .on('mousemove', function(d) {
+          var coordinates = [0, 0];
+          coordinates = d3.mouse(this);
+            var x = coordinates[0];
+            var y = coordinates[1];
+          $("#tooltip")
+            .css('left', x + 300)
+            .css('top', y + 300)
+          })
+
+   
+
+        .on('mouseout', function(d) {
+          $("#tooltip").html('').hide();
+          });
  
-        arcs.append("svg:path")
-                .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
-                .attr("d", arc);                                    //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+        arcs_anja.append("svg:path")
+          .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
+          .attr("d", arc_anja);                                    //this creates the actual SVG path using the associated data (pie) with the arc drawing function
  
-        arcs.append("svg:text")                                     //add a key to each slice
-                .attr("transform", function(d) {                    //set the key's origin to the center of the arc
+        arcs_anja.append("svg:text")                                     //add a key to each slice
+          .attr("transform", function(d) {                    //set the key's origin to the center of the arc
                 //we have to make sure to set these before calling arc.centroid
-                d.innerRadius = 0;
-                d.outerRadius = r;
-                return "translate(" + arc.centroid(d) + ")";        //this gives us a pair of coordinates like [50, 50]
+            d.innerRadius = 0;
+            d.outerRadius = r;
+            return "translate(" + arc_anja.centroid(d) + ")";        //this gives us a pair of coordinates like [50, 50]
             })
-            .attr("text-anchor", "middle")                          //center the text on it's origin
-            .text(function(d, i) { return data[i].value; });        //get the key from our original data array
+          .attr("text-anchor", "middle")                          //center the text on it's origin
+          .text(function(d, i) { return data_anja[i].value; });        //get the key from our original data array
         
     </script>
   </body>

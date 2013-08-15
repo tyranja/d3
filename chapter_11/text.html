@@ -1,0 +1,202 @@
+ 
+
+Discover Gists
+tyranja
+ 
+ 
+Star0 
+Fork3
+PUBLIC
+ anotherjavadude / index.html
+Last active 7 days ago
+
+Most simple d3.js stack bar chart from matrix
+Gist Detail
+Revisions 5
+Forks 3
+Download Gist
+Clone this gist
+
+Embed this gist
+
+Link to this gist
+
+index.htmlHTML
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Simple Stack</title>
+        <script src="http://d3js.org/d3.v2.js"></script>     
+        <style>
+            svg {
+                border: solid 1px #ccc;
+                font: 10px sans-serif;
+                shape-rendering: crispEdges;
+            }
+        </style>             
+    </head>
+    <body>
+ 
+        <div id="viz"></div>
+ 
+        <script type="text/javascript">
+            
+            var w = 960,
+            h = 500
+ 
+            // create canvas
+            var svg = d3.select("#viz").append("svg:svg")
+            .attr("class", "chart")
+            .attr("width", w)
+            .attr("height", h )
+            .append("svg:g")
+            .attr("transform", "translate(10,470)");
+ 
+            x = d3.scale.ordinal().rangeRoundBands([0, w-50])
+            y = d3.scale.linear().range([0, h-50])
+            z = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"])
+ 
+            console.log("RAW MATRIX---------------------------");
+      // 4 columns: ID,c1,c2,c3
+            var matrix = [
+                [ 1,  5871, 8916, 2868],
+                [ 2, 10048, 2060, 6171],
+                [ 3, 16145, 8090, 8045],
+                [ 4,   990,  940, 6907],
+                [ 5,   450,  430, 5000]
+            ];
+            console.log(matrix)
+ 
+            console.log("REMAP---------------------------");
+            var remapped =["c1","c2","c3"].map(function(dat,i){
+                return matrix.map(function(d,ii){
+                    return {x: ii, y: d[i+1] };
+                })
+            });
+            console.log(remapped)
+ 
+            console.log("LAYOUT---------------------------");
+            var stacked = d3.layout.stack()(remapped)
+            console.log(stacked)
+ 
+            x.domain(stacked[0].map(function(d) { return d.x; }));
+            y.domain([0, d3.max(stacked[stacked.length - 1], function(d) { return d.y0 + d.y; })]);
+ 
+            // show the domains of the scales              
+            console.log("x.domain(): " + x.domain())
+            console.log("y.domain(): " + y.domain())
+            console.log("------------------------------------------------------------------");
+ 
+            // Add a group for each column.
+            var valgroup = svg.selectAll("g.valgroup")
+            .data(stacked)
+            .enter().append("svg:g")
+            .attr("class", "valgroup")
+            .style("fill", function(d, i) { return z(i); })
+            .style("stroke", function(d, i) { return d3.rgb(z(i)).darker(); });
+ 
+            // Add a rect for each date.
+            var rect = valgroup.selectAll("rect")
+            .data(function(d){return d;})
+            .enter().append("svg:rect")
+            .attr("x", function(d) { return x(d.x); })
+            .attr("y", function(d) { return -y(d.y0) - y(d.y); })
+            .attr("height", function(d) { return y(d.y); })
+            .attr("width", x.rangeBand());
+ 
+        </script>
+    </body>
+</html>
+readme.mdMarkdown
+Starting from Mike's sample (https://gist.github.com/1134768) I stripped down the chart to the bare minimum to understand the physics. I use a matrix instead of a csv or json. With the console.log outputs you can look at the transformation of the matrix when fed into the stack layout.
+
+Write Preview Comments are parsed with GitHub Flavored Markdown
+
+Add Comment
+© 2013 GitHub Inc. All rights reserved.
+The GitHub Blog Support Contact

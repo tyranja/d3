@@ -13,38 +13,32 @@
 
 			//Width and height
 			var w = 500;
-			var h = 300;
+			var h = 600;
 
 			//Original data
-			// var dataset = [
-			// 	[
-			// 		{ x: 0, y: 5 },
-			// 		{ x: 1, y: 4 },
-			// 		{ x: 2, y: 2 },
-			// 		{ x: 3, y: 7 },
-			// 		{ x: 4, y: 23 }
-			// 	],
-			// 	[
-			// 		{ x: 0, y: 10 },
-			// 		{ x: 1, y: 12 },
-			// 		{ x: 2, y: 19 },
-			// 		{ x: 3, y: 23 },
-			// 		{ x: 4, y: 17 }
-			// 	],
-			// 	[
-			// 		{ x: 0, y: 22 },
-			// 		{ x: 1, y: 28 },
-			// 		{ x: 2, y: 32 },
-			// 		{ x: 3, y: 35 },
-			// 		{ x: 4, y: 43 }
-			// 	]
-			// ];
-			  var dataset = []
-        d3.csv("../data/buchstabe_zahl.csv", function(data) {
-          dataset = data
-          // console.log(dataset)
-        });
-        
+			var dataset = [
+				[
+					{ x: 0, y: 5 },
+					{ x: 1, y: 4 },
+					{ x: 2, y: 2 },
+					{ x: 3, y: 7 },
+					{ x: 4, y: 23 }
+				],
+				[
+					{ x: 0, y: 10 },
+					{ x: 1, y: 12 },
+					{ x: 2, y: 19 },
+					{ x: 3, y: 23 },
+					{ x: 4, y: 17 }
+				],
+				[
+					{ x: 0, y: 22 },
+					{ x: 1, y: 28 },
+					{ x: 2, y: 32 },
+					{ x: 3, y: 35 },
+					{ x: 4, y: 43 }
+				]
+			];
 
 			//Set up stack method
 			var stack = d3.layout.stack();
@@ -94,7 +88,7 @@
 					return xScale(i);
 				})
 				.attr("y", function(d) {
-					return yScale(d.y0);
+					return (-yScale(d.y0) - yScale(d.y)) + h;
 				})
 				.attr("height", function(d) {
 					return yScale(d.y);

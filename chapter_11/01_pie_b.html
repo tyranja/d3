@@ -85,7 +85,7 @@
 						  .enter()
 						  .append("g")
 						  .attr("class", "arc")
-						  .on("mouseover", "test")
+						  .on("mouseover", "function (d, i) {  return dataset[i].key;" })
 						  .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")");
 			
 			//Draw arc paths
