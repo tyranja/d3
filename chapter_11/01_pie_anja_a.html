@@ -29,7 +29,6 @@
     </style>
   </head>
   <body>
-    <div id="tooltip"></div>
     <script type="text/javascript">
  
     var w = 500,                        //width
@@ -68,26 +67,22 @@
         .enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
         .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
         .attr("class", "slice")    //allow us to style things in the slices (like text)
-        .on('mouseover', function(d) {
-          $("#tooltip")
+        .on("mouseover", function(d) {      
+          div
+              .transition()        
+              .duration(200)      
+              .style("opacity", .9);      
+          div
               .html(d.data.key)
-              .show();
-          })
-        .on('mousemove', function(d) {
-          var coordinates = [0, 0];
-          coordinates = d3.mouse(this);
-            var x = coordinates[0];
-            var y = coordinates[1];
-          $("#tooltip")
-            .css('left', x + 300)
-            .css('top', y + 300)
-          })
-
-   
-
-        .on('mouseout', function(d) {
-          $("#tooltip").html('').hide();
-          });
+              .style("left", (d3.event.pageX) + "px")     
+              .style("top", (d3.event.pageY - 28) + "px");    
+        })                  
+        .on("mouseout", function(d) {       
+          div
+            .transition()        
+            .duration(500)      
+          . style("opacity", 0);   
+        });
  
         arcs_anja.append("svg:path")
           .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
