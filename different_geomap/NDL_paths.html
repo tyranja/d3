@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Loading GeoJSON data and generating SVG paths</title>
+		<script type="text/javascript" src="../d3/d3.v3.js"></script>
+		<style type="text/css">
+
+		div.tooltip {   
+				position: absolute;           
+				text-align: center;           
+				width: 100px;                  
+				padding: 5px;             
+				color: white;
+				font: 14px sans-serif;        
+				background: #222;   
+				border: 0px;      
+				border-radius: 2px;           
+				pointer-events: none;         
+}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 1200;
+			var h = 800;
+			var color_germany = d3.scale.category10();     //builtin range of colors
+
+			//Define default path generator
+			var path = d3.geo.path()
+			  .projection(d3.geo.mercator()
+        	      .center([ 6.10, 51.94])
+                .scale(50000)
+                .translate([w/2,h/2]));
+
+
+			   // 51.94, 6.10
+			 //      .scale((width + 1) / 2 / Math.PI)
+    // .translate([width / 2, height / 2])
+
+
+			var div = d3.select("body").append("div")   
+    			.attr("class", "tooltip")               
+    			.style("opacity", 0);
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Load in GeoJSON data
+			d3.json("../data/netherlands/output_NLD.json", function(json) {
+				
+				//Bind data and create one path per GeoJSON feature
+				svg.selectAll("path")
+				  .data(json.features)
+				  .enter()
+				  .append("path")
+				  .attr("d", path)
+				  .on("mouseover", function(d) {      
+            		div
+            				.transition()        
+                		.duration(200)      
+                		.style("opacity", .9);      
+            		div
+            				.html(d.properties.NAME_1)
+                		.style("left", (d3.event.pageX) + "px")     
+                		.style("top", (d3.event.pageY - 28) + "px");    
+            	})                  
+        			.on("mouseout", function(d) {       
+            		div
+            			.transition()        
+                	.duration(500)      
+                .	style("opacity", 0);   
+        			})
+				  .style("fill", function(d, i) { return color_germany(i); })
+					.style("stroke", 'rgb(256,256,256)');
+			});
+			
+		</script>
+	</body>
+</html>
