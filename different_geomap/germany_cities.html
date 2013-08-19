@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>D3: Adding data points (circles) to the map</title>
-		<script type="text/javascript" src="../d3/d3.v3.js"></script>
-		<style type="text/css">
-div.tooltip {   
-        position: absolute;           
-        text-align: center;           
-        width: 100px;                  
-        padding: 5px;             
+  <head>
+    <meta charset="utf-8">
+    <title>D3: Adding data points (circles) to the map</title>
+    <script type="text/javascript" src="../d3/d3.v3.js"></script>
+    <style type="text/css">
+div.tooltip {
+        position: absolute;
+        text-align: center;
+        width: 100px;
+        padding: 5px;
         color: white;
-        font: 14px sans-serif;        
-        background: #222;   
-        border: 0px;      
-        border-radius: 2px;           
-        pointer-events: none;         
+        font: 14px sans-serif;
+        background: #222;
+        border: 0px;
+        border-radius: 2px;
+        pointer-events: none;
 }
-div.tooltip_city {   
-				position: absolute;           
-				text-align: center;           
-				width: 100px;                  
-				padding: 5px;             
-				color: black;
-				font: 14px sans-serif;        
-				background: #FFE93D;   
-				border: 0px;      
-				border-radius: 2px;           
-				pointer-events: none;         
+div.tooltip_city {
+        position: absolute;
+        text-align: center;
+        width: 100px;
+        padding: 5px;
+        color: black;
+        font: 14px sans-serif;
+        background: #FFE93D;
+        border: 0px;
+        border-radius: 2px;
+        pointer-events: none;
 }   </style>
   </head>
   <body>
@@ -43,106 +43,99 @@ div.tooltip_city {
             .attr("width", w)
             .attr("height", h);
 
-        d3.json("country_germany_states.json", function(json) {
-         var center = d3.geo.centroid(json)
+      d3.json("country_germany_states.json", function(json) {
+        var center = d3.geo.centroid(json)
 
-      //Define map projection
-      var projection = d3.geo.mercator()
-            .center(center)
-            .scale([16000])
-            .translate([w/2, h/2]);
+        //Define map projection
+        var projection = d3.geo.mercator()
+              .center(center)
+              .scale([16000])
+              .translate([w/2, h/2]);
 
-      //Define path generator
-      var path = d3.geo.path()
-               .projection(projection);
+        //Define path generator
+        var path = d3.geo.path()
+                 .projection(projection);
 
-      var div = d3.select("body").append("div")   
-          .attr("class", "tooltip")               
-          .style("opacity", 0);
+        var div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
 
-      var div_tooltip_city = d3.select("body").append("div")   
-          .attr("class", "tooltip_city")               
-          .style("opacity", 0);
-               
-      //Define quantize scale to sort data values into buckets of color
-      var color_germany = d3.scale.linear()
-    .domain([1, 12])
-    .range(["#FF007E", "#B21261"]);
-      // var color_germany = d3.scale.category10();     //builtin range of colors
-                //Colors taken from colorbrewer.js, included in the D3 download
+        var div_tooltip_city = d3.select("body").append("div")
+            .attr("class", "tooltip_city")
+            .style("opacity", 0);
+                 
+        //Define quantize scale to sort data values into buckets of color
+        var length = 12;
 
+        var color_germany = d3.scale.linear()
+          .domain([1, length])
+          .range(["#FF007E", "#B21261"]);
 
-    
-						svg.selectAll("path")
-					  .data(json.features)
-					  .enter()
-					  .append("path")
-					  .attr("d", path)
-					  .on("mouseover", function(d) {      
-          		div
-        				.transition()        
-            		.duration(200)      
-            		.style("opacity", .9);      
-          		div
-          				.html(d.properties.NAME_1)
-              		.style("left", (d3.event.pageX) + "px")     
-              		.style("top", (d3.event.pageY - 28) + "px");    
-            	})                  
-        		.on("mouseout", function(d) {       
-          		div
-          			.transition()        
-              	.duration(500)      
-                .	style("opacity", 0);   
-        			})
-				  .style("fill", function(d, i) { return color_germany(i); })
+        svg.selectAll("path")
+          .data(json.features)
+          .enter()
+          .append("path")
+          .attr("d", path)
+          .on("mouseover", function(d) {
+            div
+              .transition()
+              .duration(200)
+              .style("opacity", .9);
+            div
+                .html(d.properties.NAME_1)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            })
+          .on("mouseout", function(d) {
+            div
+              .transition()
+              .duration(500)
+              .  style("opacity", 0);
+            })
+          .style("fill", function(d, i) { return color_germany(i); })
           .style("stroke", 'rgb(256,256,256)');
-          
-          // Load in cities data
-          d3.csv("berlin.csv", function(data) {
-            
-            svg.selectAll("circle")
-               .data(data)
-               .enter()
-               .append("circle")
-               .attr("cx", function(d) {
-                 return (projection([d.lon, d.lat])[0] + 8);
-               })
-               .attr("cy", function(d) {
-                 return (projection([d.lon, d.lat])[1] - 12);
-               })
-               .attr("r", function(d) {
-                  if (Math.sqrt(parseInt(d.population) * 0.00004) < 3){
-                    return 3
-                  }
-                  else {
-                    return Math.sqrt(parseInt(d.population) * 0.00004);
-                  }
-               })
-               .style("fill", "#FFE93D")
-               .style("opacity", 0.75)
-               .on("mouseover", function(d) {      
-              div_tooltip_city
-                .transition()        
-                .duration(200)      
-                .style("opacity", .9);      
-              div_tooltip_city
-                  .html(d.place)
-                  .style("left", (d3.event.pageX) + "px")     
-                  .style("top", (d3.event.pageY - 28) + "px");    
-              })                  
-            .on("mouseout", function(d) {       
-              div_tooltip_city
-                .transition()        
-                .duration(500)      
-                .style("opacity", 0);
-              });
-					});
-            
 
-			
-				});
-			
-			
-		</script>
-	</body>
+            // Load in cities data
+        d3.csv("berlin.csv", function(data) {
+              
+          svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) {
+              return (projection([d.lon, d.lat])[0] + 8);
+             })
+            .attr("cy", function(d) {
+              return (projection([d.lon, d.lat])[1] - 12);
+            })
+            .attr("r", function(d) {
+              if (Math.sqrt(parseInt(d.population) * 0.00004) < 3){
+                return 3
+              }
+              else {
+                return Math.sqrt(parseInt(d.population) * 0.00004);
+              }
+            })
+            .style("fill", "#FFE93D")
+            .style("opacity", 0.75)
+            .on("mouseover", function(d) {
+              div_tooltip_city
+                .transition()
+                .duration(200)
+                .style("opacity", .9);
+              div_tooltip_city
+                .html(d.place)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {
+              div_tooltip_city
+                .transition()
+                .duration(500)
+                .style("opacity", 0);
+            });
+          });
+        });
+    </script>
+  </body>
 </html>
