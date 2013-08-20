@@ -5,30 +5,31 @@
     <title>D3: Adding data points (circles) to the map</title>
     <script type="text/javascript" src="../d3/d3.v3.js"></script>
     <style type="text/css">
-div.tooltip {
-        position: absolute;
-        text-align: center;
-        width: 100px;
-        padding: 5px;
-        color: white;
-        font: 14px sans-serif;
-        background: #222;
-        border: 0px;
-        border-radius: 2px;
-        pointer-events: none;
-}
-div.tooltip_city {
-        position: absolute;
-        text-align: center;
-        width: 100px;
-        padding: 5px;
-        color: black;
-        font: 14px sans-serif;
-        background: #FFE93D;
-        border: 0px;
-        border-radius: 2px;
-        pointer-events: none;
-}   </style>
+      div.tooltip {
+              position: absolute;
+              text-align: center;
+              width: 100px;
+              padding: 5px;
+              color: white;
+              font: 14px sans-serif;
+              background: #222;
+              border: 0px;
+              border-radius: 2px;
+              pointer-events: none;
+      }
+      div.tooltip_city {
+              position: absolute;
+              text-align: center;
+              width: 100px;
+              padding: 5px;
+              color: black;
+              font: 14px sans-serif;
+              background: #FFE93D;
+              border: 0px;
+              border-radius: 2px;
+              pointer-events: none;
+      }
+</style>
   </head>
   <body>
     <script type="text/javascript">
@@ -70,6 +71,7 @@ div.tooltip_city {
         var color_germany = d3.scale.linear()
           .domain([1, length])
           .range(["#FF007E", "#B21261"]);
+
 
         svg.selectAll("path")
           .data(json.features)
@@ -119,16 +121,30 @@ div.tooltip_city {
             .style("fill", "#FFE93D")
             .style("opacity", 0.75)
             .on("mouseover", function(d) {
+              var circle = d3.select(this)
+                circle.transition()
+                  .duration(500)
+                  .attr("r", circle.attr("r") * 1 + 10 );
               div_tooltip_city
                 .transition()
                 .duration(200)
                 .style("opacity", .9);
               div_tooltip_city
-                .html(d.place)
+                .html("<b>"+ d.place + "</b>" + "</br>Einwohner: " + d.population)
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
             })
             .on("mouseout", function(d) {
+              var circle = d3.select(this)
+                circle.transition()
+                  .duration(500)
+                  .attr("r", function(d) {
+                    if (Math.sqrt(parseInt(d.population) * 0.00004) < 3){
+                      return 3
+                      }
+                    else {
+                      return Math.sqrt(parseInt(d.population) * 0.00004);
+                    }; });
               div_tooltip_city
                 .transition()
                 .duration(500)
